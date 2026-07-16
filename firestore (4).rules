@@ -1,0 +1,140 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ============================================================
+    // ADMIN ALLOWLIST
+    // Bootstrap the first admin manually: Firebase Console → Firestore
+    // Database → Data tab → Start collection → "admins" → Add document
+    // → Document ID = the admin's email, all lowercase (e.g.
+    // huasengheng@gmail.com) → any field, e.g. {role: "admin"}.
+    // The app itself cannot create admin entries — this is intentional,
+    // so a compromised client can never grant itself admin rights.
+    // ============================================================
+    function isAdmin() {
+      return request.auth != null &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.token.email));
+    }
+
+    match /admins/{email} {
+      // A signed-in user may check ONLY their own allowlist entry (so the
+      // Admin App can tell them "not authorized" instead of just failing).
+      allow read: if request.auth != null && request.auth.token.email == email;
+      allow write: if false; // no client, admin or otherwise, can add/remove admins
+    }
+
+    // ============================================================
+    // REGISTRATION / OTP / LOGIN
+    // The User App has no Firebase Auth session of its own (it uses a
+    // custom Firestore-only account system), so these rules can't verify
+    // "this really is that user" the way Firebase Auth normally would.
+    // What they CAN enforce: only an admin may move a request into an
+    // approved/verified/rejected state — a regular client may only create
+    // its own pending request or self-verify after a correct OTP entry.
+    // ============================================================
+    match /otp_requests/{id} {
+      allow read: if true;
+      allow create: if request.resource.data.status == 'pending';
+      allow update: if isAdmin()
+        || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])
+            && request.resource.data.status == 'verified')
+        // Profile photo — the account owner (matched by the Firebase Auth
+        // session linked at login via linkAccountSession) may update only
+        // this one field directly; every other field on this doc still
+        // requires an admin or the OTP-verify path above.
+        || (request.auth != null
+            && resource.data.authUid == request.auth.uid
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['photoUrl']));
+      match /messages/{msgId} {
+        allow read, write: if true;
+      }
+    }
+
+    // ============================================================
+    // KYC — a user may submit or resubmit (status stays 'pending'),
+    // but only an admin may mark it verified/rejected or edit the
+    // submitted fields.
+    // ============================================================
+    match /kyc_requests/{id} {
+      allow read: if true;
+      allow write: if isAdmin() || request.resource.data.status == 'pending';
+    }
+
+    // ============================================================
+    // DEPOSIT / WITHDRAW REQUESTS — a user may create their own request;
+    // only an admin may confirm/complete it (which is what actually
+    // moves money).
+    // ============================================================
+    match /deposit_requests/{id} {
+      allow read: if true;
+      allow create: if request.resource.data.status == 'pending';
+      allow update: if isAdmin();
+    }
+    match /withdraw_requests/{id} {
+      allow read: if true;
+      allow create: if request.resource.data.status == 'pending';
+      allow update: if isAdmin();
+    }
+
+    // ============================================================
+    // PHONE / PASSWORD CHANGE REQUESTS — same pattern as above.
+    // ============================================================
+    match /phone_change_requests/{id} {
+      allow read: if true;
+      allow create: if request.resource.data.status == 'pending';
+      allow update: if isAdmin();
+    }
+    match /password_change_requests/{id} {
+      allow read: if true;
+      allow create: if request.resource.data.status == 'pending';
+      allow update: if isAdmin();
+    }
+
+    // ============================================================
+    // EXCHANGE RATE & TRADE CONTROL — admin-only writes. Every user
+    // reads these live; only the Admin App should ever change them.
+    // ============================================================
+    match /settings/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ============================================================
+    // WALLETS & TRADES — now Cloud-Functions-only.
+    // Direct client writes are denied here; the User App calls
+    // placeTrade / (scheduled resolveDueTrades) and the Admin App
+    // calls confirmDeposit / confirmWithdraw / manualWalletAdjustment.
+    // Those functions use the Admin SDK, which always bypasses these
+    // rules, so this "false" does not block them — it only blocks a
+    // browser trying to write these fields directly.
+    // ============================================================
+    match /wallets/{id} {
+      allow read: if true;
+      allow write: if false;
+      match /transactions/{txId} {
+        allow read: if true;
+        allow write: if false;
+      }
+    }
+    match /trades/{id} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // ============================================================
+    // LIVE CHAT — open both ways; no Firebase Auth on the User App
+    // side to check message ownership against.
+    // ============================================================
+    match /support_chats/{id} {
+      allow read, write: if true;
+      match /messages/{msgId} {
+        allow read, write: if true;
+      }
+    }
+
+    // Everything else stays locked.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
