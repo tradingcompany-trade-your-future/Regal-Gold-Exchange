@@ -1,0 +1,13 @@
+{
+  "name": "aurum-gold-functions",
+  "description": "Cloud Functions for Aurum Gold — server-side wallet and trade mediation",
+  "engines": {
+    "node": "20"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "firebase-admin": "^12.1.0",
+    "firebase-functions": "^5.0.0"
+  },
+  "private": true
+}
