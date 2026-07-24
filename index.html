@@ -1059,27 +1059,6 @@ body:not(.theme-night) .bottom-nav{background:rgba(255,255,255,0.72); border-top
           <div class="kyc-status-row"><span id="wallet-balance-text" style="font-family:var(--font-display); font-size:20px; color:var(--gold);">0</span></div>
         </div>
 
-        <div class="savings-card" style="margin:16px;">
-          <div class="kyc-card-title" data-i18n="savings_section_title">SAVINGS &amp; INTEREST</div>
-          <div class="savings-tier-list">
-            <div class="savings-tier-row"><span data-i18n="savings_tier0_label">$5,000–$10,000 balance</span><span class="savings-tier-rate">+5% / month</span></div>
-            <div class="savings-tier-row"><span data-i18n="savings_tier1_label">$20,000+ balance</span><span class="savings-tier-rate">+5%</span></div>
-            <div class="savings-tier-row"><span data-i18n="savings_tier2_label">$30,000+ balance</span><span class="savings-tier-rate">+$10 / day</span></div>
-          </div>
-          <div class="savings-summary">
-            <div class="savings-summary-row"><span data-i18n="savings_holdings_label">Total Holdings</span><span id="savings-holdings-value">$0</span></div>
-            <div class="savings-summary-row"><span data-i18n="savings_interest_label">Estimated Interest</span><span id="savings-interest-value" class="savings-interest-amount">$0</span></div>
-          </div>
-        </div>
-
-        <div class="kyc-card" style="margin:16px;">
-          <div class="kyc-card-title" data-i18n="deposit_section_title">DEPOSIT</div>
-          <button class="kyc-submit-btn" data-i18n="deposit_btn" onclick="openMoneyFlow('deposit')">Deposit</button>
-        </div>
-        <div class="kyc-card" style="margin:16px;">
-          <div class="kyc-card-title" data-i18n="withdraw_section_title">WITHDRAW</div>
-          <button class="kyc-submit-btn" data-i18n="withdraw_btn" onclick="openMoneyFlow('withdraw')">Withdraw</button>
-        </div>
         <div class="kyc-card" style="margin:16px;">
           <div class="kyc-card-title" data-i18n="tx_history_title">TRANSACTION HISTORY</div>
           <div id="tx-history-list" class="tx-history-list">
@@ -1184,11 +1163,6 @@ body:not(.theme-night) .bottom-nav{background:rgba(255,255,255,0.72); border-top
             <div class="profile-row-text"><div class="profile-row-title" data-i18n="account_level_title">Account Level</div><div class="profile-row-sub" id="profile-level-sub" data-i18n="account_level_sub">Upgrade available after review</div></div>
             <div class="profile-row-chev">›</div>
           </div>
-          <div class="profile-row" onclick="openKycPanel()">
-            <div class="profile-row-icon"><img class="row-icon-img spin-icon" src="" data-nav-icon="kyc" alt=""></div>
-            <div class="profile-row-text"><div class="profile-row-title" data-i18n="kyc_verification_title">KYC Verification</div><div class="profile-row-sub" id="profile-kyc-sub" data-i18n="kyc_status_not_submitted">Not submitted</div></div>
-            <div class="profile-row-chev">›</div>
-          </div>
           <div class="profile-row" onclick="openPanel('panel-change-phone')">
             <div class="profile-row-icon"><img class="row-icon-img spin-icon" src="" data-nav-icon="telephone" alt=""></div>
             <div class="profile-row-text"><div class="profile-row-title" data-i18n="change_phone_title">Change Phone</div><div class="profile-row-sub" data-i18n="no_pending_request">No pending request.</div></div>
@@ -1272,26 +1246,6 @@ body:not(.theme-night) .bottom-nav{background:rgba(255,255,255,0.72); border-top
   </div>
 </section>
 
-<!-- ===== AMOUNT ENTRY MODAL (Deposit / Withdraw) ===== -->
-<div class="amount-modal hidden" id="amount-modal">
-  <div class="amount-modal-card">
-    <div class="amount-modal-title" id="amount-modal-title">Enter amount</div>
-    <div class="payment-methods" id="amount-modal-methods">
-      <button class="payment-btn" onclick="pickMoneyMethod('wave')" data-i18n="deposit_method_wave">Wave Money</button>
-      <button class="payment-btn" onclick="pickMoneyMethod('kpay')" data-i18n="deposit_method_kpay">KBZ Pay</button>
-      <button class="payment-btn" onclick="pickMoneyMethod('aya')" data-i18n="deposit_method_aya">AYA Pay</button>
-      <button class="payment-btn" onclick="pickMoneyMethod('bank')" data-i18n="deposit_method_bank">Banking</button>
-    </div>
-    <div id="amount-modal-input-wrap" class="hidden">
-      <input type="number" min="0" step="any" id="amount-modal-input" data-i18n-ph="amount_placeholder" placeholder="Amount (MMK)">
-      <div class="amount-modal-actions">
-        <button class="amount-cancel-btn" data-i18n="amount_cancel_btn" onclick="closeAmountModal()">Cancel</button>
-        <button class="amount-confirm-btn" id="amount-modal-confirm" onclick="confirmAmountModal()">Add</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- ===== TRADE RESULT MODAL (win/lose reveal) ===== -->
 <div class="amount-modal hidden" id="trade-result-modal">
   <div class="amount-modal-card trade-result-card">
@@ -1303,19 +1257,6 @@ body:not(.theme-night) .bottom-nav{background:rgba(255,255,255,0.72); border-top
   </div>
 </div>
 
-<!-- ===== KYC-REQUIRED MODAL (shown before a trade if identity isn't verified) ===== -->
-<div class="amount-modal hidden" id="kyc-required-modal">
-  <div class="amount-modal-card kyc-required-card">
-    <div class="kyc-required-icon">🛡️</div>
-    <div class="kyc-required-title" data-i18n="kyc_gate_title">Verify Your Identity to Trade</div>
-    <div class="kyc-required-body" id="kyc-required-body" data-i18n="kyc_gate_body">Complete KYC verification once to unlock live trading on HUA SENG HENG.</div>
-    <div class="kyc-required-actions">
-      <button class="amount-cancel-btn" data-i18n="kyc_gate_later" onclick="closeKycRequiredModal()">Later</button>
-      <button class="amount-confirm-btn" data-i18n="kyc_gate_cta" onclick="closeKycRequiredModal(); openPanel('panel-kyc');">Verify Now</button>
-    </div>
-  </div>
-</div>
-
 <!-- ===== INSUFFICIENT BALANCE MODAL ===== -->
 <div class="amount-modal hidden" id="insufficient-balance-modal">
   <div class="amount-modal-card kyc-required-card">
@@ -1324,7 +1265,7 @@ body:not(.theme-night) .bottom-nav{background:rgba(255,255,255,0.72); border-top
     <div class="kyc-required-body" id="bal-required-body" data-i18n="bal_gate_body">Please top up your wallet before placing this trade.</div>
     <div class="kyc-required-actions">
       <button class="amount-cancel-btn" data-i18n="kyc_gate_later" onclick="closeInsufficientBalanceModal()">Later</button>
-      <button class="amount-confirm-btn" data-i18n="bal_gate_cta" onclick="closeInsufficientBalanceModal(); switchBottomTab('tab-wallet', document.querySelector('[data-tab=tab-wallet]')); openMoneyFlow('deposit');">Deposit</button>
+      <button class="amount-confirm-btn" data-i18n="bal_gate_cta" onclick="closeInsufficientBalanceModal(); openChat();">Contact Instructor</button>
     </div>
   </div>
 </div>
@@ -1342,7 +1283,7 @@ body:not(.theme-night) .bottom-nav{background:rgba(255,255,255,0.72); border-top
       <div class="level-current-badge" id="level-current-badge">Standard</div>
     </div>
     <div class="level-list" id="level-list"></div>
-    <div class="level-note" data-i18n="account_level_progress_note">Levels upgrade automatically based on your cumulative deposit total.</div>
+    <div class="level-note" data-i18n="account_level_progress_note">Levels upgrade automatically based on your cumulative trading volume.</div>
   </div>
 </div>
 
@@ -1360,7 +1301,6 @@ body:not(.theme-night) .bottom-nav{background:rgba(255,255,255,0.72); border-top
       <div class="acc-info-row"><span data-i18n="acc_info_country">Country</span><span id="acc-info-country">—</span></div>
       <div class="acc-info-row"><span data-i18n="acc_info_dob">Date of Birth</span><span id="acc-info-dob">—</span></div>
       <div class="acc-info-row"><span data-i18n="acc_info_joined">Registered On</span><span id="acc-info-joined">—</span></div>
-      <div class="acc-info-row"><span data-i18n="acc_info_kyc">KYC Status</span><span id="acc-info-kyc">—</span></div>
       <div class="acc-info-row"><span data-i18n="acc_info_level">Member Level</span><span id="acc-info-level">—</span></div>
       <div class="acc-info-row"><span data-i18n="acc_info_volume">Total Trading Volume</span><span id="acc-info-volume">—</span></div>
     </div>
@@ -1400,65 +1340,8 @@ body:not(.theme-night) .bottom-nav{background:rgba(255,255,255,0.72); border-top
     <div class="prestige-perk-row"><span class="prestige-perk-icon">🎯</span><span data-i18n="prestige_perk2">Priority customer service &amp; dedicated VIP desk</span></div>
     <div class="prestige-perk-row"><span class="prestige-perk-icon">💎</span><span data-i18n="prestige_perk3">Higher single-trade ceilings up to $100,000</span></div>
 
-    <div class="prestige-perks-title" data-i18n="prestige_interest_title">SAVINGS INTEREST</div>
-    <div class="prestige-perk-row"><span class="prestige-perk-icon">🪙</span><span data-i18n="prestige_interest_tier0">$5,000–$10,000 balance earns +5% interest every month</span></div>
-    <div class="prestige-perk-row"><span class="prestige-perk-icon">📈</span><span data-i18n="prestige_interest_tier1">$20,000+ balance earns +5% interest every month</span></div>
-    <div class="prestige-perk-row"><span class="prestige-perk-icon">👑</span><span data-i18n="prestige_interest_tier2">$30,000+ balance earns a flat +$10 every day</span></div>
-    <div class="prestige-perk-row" style="background:rgba(240,192,90,0.08); border-color:rgba(240,192,90,0.25);"><span class="prestige-perk-icon">💰</span><span data-i18n="prestige_interest_note">The more you deposit, the higher your monthly interest — top up your wallet to move up a tier and grow your savings faster.</span></div>
   </div>
 </div>
-
-<!-- ===== FULL-PAGE PANEL: KYC ===== -->
-<div class="fullpage-panel hidden" id="panel-kyc">
-  <div class="fullpage-head">
-    <button class="fullpage-close" onclick="closePanel('panel-kyc')">✕</button>
-    <div class="fullpage-title" data-i18n="kyc_form_title">KYC Verification</div>
-  </div>
-  <div class="fullpage-body">
-    <!-- state: not submitted / rejected -> show the form -->
-    <div id="kyc-form-view">
-      <div class="field"><label data-i18n="kyc_real_name">Real Name</label><input type="text" id="kyc-input-name"></div>
-      <div class="field"><label data-i18n="kyc_nrc">NRC No</label><input type="text" id="kyc-input-nrc"></div>
-      <div class="field"><label data-i18n="label_age">Age</label><input type="number" min="18" max="100" placeholder="e.g. 25" id="kyc-input-dob"></div>
-      <div class="field"><label data-i18n="kyc_phone">Phone No</label><input type="tel" id="kyc-input-phone"></div>
-      <div class="field"><label data-i18n="kyc_withdraw_password">Withdraw Password</label><input type="password" id="kyc-input-withdraw-pass"></div>
-      <div class="field"><label data-i18n="kyc_withdraw_password_confirm">Confirm Withdraw Password</label><input type="password" id="kyc-input-withdraw-pass2"></div>
-      <div class="field">
-        <label data-i18n="kyc_id_front">ID Card — Front</label>
-        <input type="file" accept="image/*" id="kyc-input-front" onchange="previewKycImage(this,'kyc-preview-front')">
-        <img id="kyc-preview-front" class="kyc-img-preview hidden">
-      </div>
-      <div class="field">
-        <label data-i18n="kyc_id_back">ID Card — Back</label>
-        <input type="file" accept="image/*" id="kyc-input-back" onchange="previewKycImage(this,'kyc-preview-back')">
-        <img id="kyc-preview-back" class="kyc-img-preview hidden">
-      </div>
-      <div class="err-msg" id="kyc-form-err"></div>
-      <div class="two-btn-row">
-        <button class="amount-cancel-btn" data-i18n="kyc_cancel_btn" onclick="closePanel('panel-kyc')">Cancel</button>
-        <button class="amount-confirm-btn" data-i18n="kyc_submit_btn2" onclick="submitKyc()">Submit KYC</button>
-      </div>
-    </div>
-
-    <!-- state: pending / verified -> show status + submitted info read-only -->
-    <div id="kyc-status-view" class="hidden">
-      <div class="kyc-card">
-        <div class="kyc-status-row" id="kyc-status-row">
-          <span class="kyc-status-dot" id="kyc-status-dot"></span>
-          <span id="kyc-status-text" data-i18n="kyc_status_pending">Pending</span>
-        </div>
-      </div>
-      <div class="kyc-card" id="kyc-submitted-info">
-        <div class="kyc-card-title" data-i18n="kyc_submitted_view_title">Submitted KYC Info</div>
-        <div class="rate-row"><span data-i18n="kyc_real_name">Real Name</span><span id="kyc-view-name">—</span></div>
-        <div class="rate-row"><span data-i18n="kyc_nrc">NRC No</span><span id="kyc-view-nrc">—</span></div>
-        <div class="rate-row"><span data-i18n="kyc_dob">DOB</span><span id="kyc-view-dob">—</span></div>
-        <div class="rate-row"><span data-i18n="kyc_phone">Phone No</span><span id="kyc-view-phone">—</span></div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- ===== FULL-PAGE PANEL: CHANGE PHONE ===== -->
 <div class="fullpage-panel hidden" id="panel-change-phone">
   <div class="fullpage-head">
@@ -1485,8 +1368,7 @@ body:not(.theme-night) .bottom-nav{background:rgba(255,255,255,0.72); border-top
   <div class="fullpage-body">
     <div id="password-type-view">
       <div class="field-label-standalone" data-i18n="change_password_type_q">Which password would you like to change?</div>
-      <button class="trade-style-btn" style="width:100%; margin-bottom:8px;" data-i18n="change_password_type_account" onclick="choosePasswordType('account')">Account Password</button>
-      <button class="trade-style-btn" style="width:100%;" data-i18n="change_password_type_withdraw" onclick="choosePasswordType('withdraw')">Withdrawal Password</button>
+      <button class="trade-style-btn" style="width:100%;" data-i18n="change_password_type_account" onclick="choosePasswordType('account')">Account Password</button>
     </div>
     <div id="password-form-view" class="hidden">
       <div class="field"><label data-i18n="change_password_old">Old Password</label><input type="password" id="password-input-old"></div>
@@ -1566,13 +1448,7 @@ body:not(.theme-night) .bottom-nav{background:rgba(255,255,255,0.72); border-top
     </div>
   </div>
 
-  <!-- ===== KYC SUBMITTING OVERLAY ===== -->
-  <div class="kyc-submitting-overlay hidden" id="kyc-submitting-overlay">
-    <div class="kyc-submitting-card">
-      <div class="kyc-submitting-spinner"></div>
-      <div class="kyc-submitting-text" data-i18n="kyc_submitting_msg">HUA SENG HENG Admin Team is reviewing and verifying — please wait a moment.</div>
-    </div>
-  </div>
+
 </div>
 
 
@@ -2116,8 +1992,6 @@ async function openAccountInfoPanel(){
     document.getElementById('acc-info-country').textContent = cc ? cc.name : '—';
     document.getElementById('acc-info-dob').textContent = data.dob || '—';
     document.getElementById('acc-info-joined').textContent = data.createdAt && data.createdAt.toDate ? data.createdAt.toDate().toLocaleDateString() : '—';
-    const kycLabel = currentKycStatus === 'verified' ? t('kyc_verified_check') : currentKycStatus === 'pending' ? t('kyc_status_pending') : t('kyc_status_not_submitted');
-    document.getElementById('acc-info-kyc').textContent = kycLabel;
     document.getElementById('acc-info-level').textContent = document.getElementById('profile-member-badge') ? document.getElementById('profile-member-badge').textContent.trim() : '—';
     document.getElementById('acc-info-volume').textContent = '$' + (currentTotalVolume || 0).toLocaleString();
   }catch(ex){ console.error('Account info load error', ex); }
@@ -2157,14 +2031,11 @@ async function completeLogin(uid, password, doc){
   showScreen('screen-app');
   const chatFabEl = document.querySelector('.chat-fab');
   if(chatFabEl) chatFabEl.classList.add('hidden');
-  refreshKycStatusCard('not_submitted');
-  listenForKycStatus(loggedInUid);
   listenForSupportChat(loggedInUid);
   listenForWalletBalance(loggedInUid);
   listenForTxHistory(loggedInUid);
   listenForTradeRecords(loggedInUid);
-  listenForInterestLog(loggedInUid);
-  checkAndCreditMonthlyInterest(loggedInUid);
+  startTradeControlListener(loggedInUid);
   listenForRates();
   listenForAnnouncements();
   refreshGoldSpotPriceForProfile();
